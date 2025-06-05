@@ -1,15 +1,50 @@
 public with sharing class ProRataFeeCalculator {
-    /**
-     * Calculates the pro rata modifier.
-     *
-     * @param actualStart      The start date of the actual service delivery
-     * @param actualEnd        The end date of the actual service delivery
-     * @param periodStart      The start date of the target period (e.g., billing or reporting period)
-     * @param periodEnd        The end date of the target period
-     * @param serviceFrequency One of 'Daily', 'Weekly', 'Monthly'; defines the base unit of the service cycle
-     * @param scheduleCount    A multiplier indicating how many frequency units make up a full cycle (e.g., 2 = biweekly, 3 = quarterly)
-     * @return Decimal prorated modifier, rounded to 2 decimal places
-     */
+
+    public class InputWrapper {
+        @InvocableVariable(required=true)
+        public Date actualStart;
+
+        @InvocableVariable(required=true)
+        public Date actualEnd;
+
+        @InvocableVariable(required=true)
+        public Date periodStart;
+
+        @InvocableVariable(required=true)
+        public Date periodEnd;
+
+        @InvocableVariable(required=true)
+        public String serviceFrequency;
+
+        @InvocableVariable(required=true)
+        public Integer scheduleCount;
+    }
+
+    public class OutputWrapper {
+        @InvocableVariable
+        public Decimal prorataModifier;
+    }
+
+    @InvocableMethod(label='Calculate Pro Rata Modifier')
+    public static List<OutputWrapper> calculateProRataModifierFromFlow(List<InputWrapper> requests) {
+        List<OutputWrapper> results = new List<OutputWrapper>();
+
+        for (InputWrapper req : requests) {
+            OutputWrapper res = new OutputWrapper();
+            res.prorataModifier = calculateProRataModifier(
+                req.actualStart,
+                req.actualEnd,
+                req.periodStart,
+                req.periodEnd,
+                req.serviceFrequency,
+                req.scheduleCount
+            );
+            results.add(res);
+        }
+
+        return results;
+    }
+
     public static Decimal calculateProRataModifier(
         Date actualStart,
         Date actualEnd,

@@ -10,7 +10,7 @@ private class ProRataFeeCalculatorTest {
         Date periodEnd = Date.newInstance(2025, 6, 14); 
 
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Weekly', 2
+            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2
         );
 
         Decimal expected = Decimal.valueOf(10).divide(14, 2, RoundingMode.HALF_UP); // 0.71
@@ -26,7 +26,7 @@ private class ProRataFeeCalculatorTest {
         Date periodEnd = Date.newInstance(2025, 4, 1); 
 
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Monthly', 3
+            actualStart, actualEnd, periodStart, periodEnd, 'Month', 3
         );
 
         Integer cycleLength = periodStart.daysBetween(periodStart.addMonths(3)); 
@@ -41,7 +41,7 @@ private class ProRataFeeCalculatorTest {
         Date startDate = Date.newInstance(2025, 6, 1);
         Date endDate = Date.newInstance(2025, 6, 10);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            startDate, endDate, startDate, endDate, 'Daily', 10
+            startDate, endDate, startDate, endDate, 'Day', 10
         );
         System.assertEquals(1.00, result);
     }
@@ -53,7 +53,7 @@ private class ProRataFeeCalculatorTest {
         Date periodStart = Date.newInstance(2025, 6, 1);
         Date periodEnd = Date.newInstance(2025, 6, 10);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Weekly', 2
+            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2
         );
         Decimal expected = Decimal.valueOf(6).divide(14, 2, RoundingMode.HALF_UP);
         System.assertEquals(expected, result);
@@ -64,7 +64,7 @@ private class ProRataFeeCalculatorTest {
         Date startDate = Date.newInstance(2025, 6, 1);
         Date endDate = Date.newInstance(2025, 6, 30);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            startDate, endDate, startDate, endDate, 'Monthly', 1
+            startDate, endDate, startDate, endDate, 'Month', 1
         );
         System.assertEquals(1.00, result);
     }
@@ -76,7 +76,7 @@ private class ProRataFeeCalculatorTest {
         Date periodStart = Date.newInstance(2025, 6, 1);
         Date periodEnd = Date.newInstance(2025, 6, 30);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Monthly', 1
+            actualStart, actualEnd, periodStart, periodEnd, 'Month', 1
         );
         Decimal expected = Decimal.valueOf(16).divide(30, 2, RoundingMode.HALF_UP);
         System.assertEquals(expected, result);
@@ -85,7 +85,7 @@ private class ProRataFeeCalculatorTest {
     @isTest
     static void testInvalidFrequency() {
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            Date.today(), Date.today().addDays(10), Date.today(), Date.today().addDays(10), 'Yearly', 1
+            Date.today(), Date.today().addDays(10), Date.today(), Date.today().addDays(10), 'Year', 1
         );
         System.assertEquals(0.00, result);
     }
@@ -93,7 +93,7 @@ private class ProRataFeeCalculatorTest {
     @isTest
     static void testZeroScheduleCount() {
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            Date.today(), Date.today().addDays(5), Date.today(), Date.today().addDays(5), 'Daily', 0
+            Date.today(), Date.today().addDays(5), Date.today(), Date.today().addDays(5), 'Day', 0
         );
         System.assertEquals(0.00, result);
     }
@@ -105,7 +105,7 @@ private class ProRataFeeCalculatorTest {
         Date periodStart = Date.newInstance(2025, 6, 1);
         Date periodEnd = Date.newInstance(2025, 6, 10);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Daily', 10
+            actualStart, actualEnd, periodStart, periodEnd, 'Day', 10
         );
         System.assertEquals(0.00, result);
     }

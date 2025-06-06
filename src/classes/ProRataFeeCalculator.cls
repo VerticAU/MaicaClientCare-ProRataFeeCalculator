@@ -70,11 +70,11 @@ public with sharing class ProRataFeeCalculator {
         Integer cycleLength;
         serviceFrequency = serviceFrequency.trim().toLowerCase();
 
-        if (serviceFrequency == 'daily') {
+        if (serviceFrequency == 'day') {
             cycleLength = 1 * scheduleCount;
-        } else if (serviceFrequency == 'weekly') {
+        } else if (serviceFrequency == 'week') {
             cycleLength = 7 * scheduleCount;
-        } else if (serviceFrequency == 'monthly') {
+        } else if (serviceFrequency == 'month') {
             Date cycleEnd = periodStart.addMonths(scheduleCount);
             cycleLength = periodStart.daysBetween(cycleEnd);
         } else {

@@ -73,7 +73,7 @@ public with sharing class ProRataFeeCalculator {
         if (serviceFrequency == 'day') {
             cycleLength = 1 * scheduleCount;
         } else if (serviceFrequency == 'week') {
-            cycleLength = 7 * scheduleCount;
+            cycleLength = periodStart.daysBetween(periodEnd) + 1;
         } else if (serviceFrequency == 'month') {
             Date cycleEnd = periodStart.addMonths(scheduleCount);
             cycleLength = periodStart.daysBetween(cycleEnd);

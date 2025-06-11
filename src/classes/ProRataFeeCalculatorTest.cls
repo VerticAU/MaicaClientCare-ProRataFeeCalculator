@@ -2,6 +2,21 @@
 private class ProRataFeeCalculatorTest {
 
     @isTest
+    static void testActualAndRawDatesTheSame() {
+        // serviceFrequency: 'Weekly', scheduleCount: 2, actual and raw periods start and end on the same dates
+        Date actualStart = Date.newInstance(2025, 5, 15);
+        Date actualEnd = Date.newInstance(2025, 5, 27);
+        Date periodStart = Date.newInstance(2025, 5, 15);
+        Date periodEnd = Date.newInstance(2025, 5, 27); 
+
+        Decimal result = ProRataFeeCalculator.calculateProRataModifier(
+            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2
+        );
+
+        System.assertEquals(1, result);
+    }
+    
+    @isTest
     static void testBiweeklyService() {
         // serviceFrequency: 'Weekly', scheduleCount: 2, overlap: 10 days, cycleLength: 14 days
         Date actualStart = Date.newInstance(2025, 6, 1);
@@ -52,10 +67,14 @@ private class ProRataFeeCalculatorTest {
         Date actualEnd = Date.newInstance(2025, 6, 14);
         Date periodStart = Date.newInstance(2025, 6, 1);
         Date periodEnd = Date.newInstance(2025, 6, 10);
+
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
             actualStart, actualEnd, periodStart, periodEnd, 'Week', 2
         );
-        Decimal expected = Decimal.valueOf(6).divide(14, 2, RoundingMode.HALF_UP);
+
+        // 6 overlapping days (June 5 to 10), cycle length = 10 days
+        Decimal expected = Decimal.valueOf(6).divide(10, 2, RoundingMode.HALF_UP); // = 0.60
+
         System.assertEquals(expected, result);
     }
 

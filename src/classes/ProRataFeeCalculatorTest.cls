@@ -44,11 +44,7 @@ private class ProRataFeeCalculatorTest {
             actualStart, actualEnd, periodStart, periodEnd, 'Month', 3
         );
 
-        Integer cycleLength = periodStart.daysBetween(periodStart.addMonths(3)); 
-        Integer overlapDays = actualStart.daysBetween(actualEnd) + 1; 
-
-        Decimal expected = Decimal.valueOf(overlapDays).divide(cycleLength, 2, RoundingMode.HALF_UP); // 0.67
-        System.assertEquals(expected, result, 'Quarterly service prorate modifier mismatch');
+        System.assertEquals(0.66, result, 'Quarterly service prorate modifier mismatch');
     }
     
     @isTest

@@ -74,10 +74,7 @@ public with sharing class ProRataFeeCalculator {
             cycleLength = 1 * scheduleCount;
         } else if (serviceFrequency == 'week') {
             cycleLength = periodStart.daysBetween(periodEnd) + 1;
-        } else if (serviceFrequency == 'month') {
-            Date cycleEnd = periodStart.addMonths(scheduleCount);
-            cycleLength = periodStart.daysBetween(cycleEnd);
-        } else {
+        } else if (serviceFrequency != 'month') {
             return 0.0;
         }
 
@@ -85,7 +82,9 @@ public with sharing class ProRataFeeCalculator {
             return 0.0;
         }
 
-        Decimal modifier = Decimal.valueOf(overlapDays) / Decimal.valueOf(cycleLength);
+        Decimal modifier = serviceFrequency == 'month' ?
+        Decimal.valueOf(overlapDays) * Decimal.valueOf((12 / scheduleCount)) / 365 :
+        Decimal.valueOf(overlapDays) / Decimal.valueOf(cycleLength);
         Decimal prorataModifier = modifier.setScale(2, RoundingMode.HALF_UP);
 
         return prorataModifier;

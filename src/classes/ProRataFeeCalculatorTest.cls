@@ -81,7 +81,7 @@ private class ProRataFeeCalculatorTest {
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
             startDate, endDate, startDate, endDate, 'Month', 1
         );
-        System.assertEquals(0.99, result);
+        System.assertEquals(1.00, result);
     }
 
     @isTest

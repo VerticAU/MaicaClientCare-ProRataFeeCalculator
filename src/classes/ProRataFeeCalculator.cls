@@ -18,26 +18,30 @@ public with sharing class ProRataFeeCalculator {
 
         @InvocableVariable(required=true)
         public Integer scheduleCount;
+
+        @InvocableVariable(required=true)
+        public Decimal agreementRate;
     }
 
     public class OutputWrapper {
         @InvocableVariable
-        public Decimal prorataModifier;
+        public Decimal prorataRate;
     }
 
-    @InvocableMethod(label='Calculate Pro Rata Modifier')
+    @InvocableMethod(label='Calculate Pro Rata Rate')
     public static List<OutputWrapper> calculateProRataModifierFromFlow(List<InputWrapper> requests) {
         List<OutputWrapper> results = new List<OutputWrapper>();
 
         for (InputWrapper req : requests) {
             OutputWrapper res = new OutputWrapper();
-            res.prorataModifier = calculateProRataModifier(
+            res.prorataRate = calculateProRataModifier(
                 req.actualStart,
                 req.actualEnd,
                 req.periodStart,
                 req.periodEnd,
                 req.serviceFrequency,
-                req.scheduleCount
+                req.scheduleCount,
+                req.agreementRate
             );
             results.add(res);
         }
@@ -51,10 +55,11 @@ public with sharing class ProRataFeeCalculator {
         Date periodStart,
         Date periodEnd,
         String serviceFrequency,
-        Integer scheduleCount
+        Integer scheduleCount,
+        Decimal agreementRate
     ) {
         if (actualStart == null || actualEnd == null || periodStart == null || periodEnd == null ||
-            serviceFrequency == null || scheduleCount == null || scheduleCount <= 0) {
+            serviceFrequency == null || scheduleCount == null || scheduleCount <= 0 || agreementRate == null || agreementRate == 0) {
             return 0.0;
         }
 
@@ -88,8 +93,9 @@ public with sharing class ProRataFeeCalculator {
         Decimal modifier = ( serviceFrequency == 'month' &&  overlapDays != cycleLength ) ?
             Decimal.valueOf(overlapDays) * Decimal.valueOf((12 / scheduleCount)) / 365 :
             Decimal.valueOf(overlapDays) / Decimal.valueOf(cycleLength);
-        Decimal prorataModifier = modifier.setScale(2, RoundingMode.HALF_UP);
+        modifier = modifier.setScale(6, RoundingMode.HALF_UP);
+        Decimal prorataRate = (agreementRate * modifier).setScale(2, RoundingMode.HALF_UP);
 
-        return prorataModifier;
+        return prorataRate;
     }
 }

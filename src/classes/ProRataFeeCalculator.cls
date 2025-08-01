@@ -25,7 +25,7 @@ public with sharing class ProRataFeeCalculator {
 
     public class OutputWrapper {
         @InvocableVariable
-        public Decimal prorataRate;
+        public Decimal proRataRate;
     }
 
     @InvocableMethod(label='Calculate Pro Rata Rate')
@@ -34,7 +34,7 @@ public with sharing class ProRataFeeCalculator {
 
         for (InputWrapper req : requests) {
             OutputWrapper res = new OutputWrapper();
-            res.prorataRate = calculateProRataModifier(
+            res.proRataRate = calculateProRataModifier(
                 req.actualStart,
                 req.actualEnd,
                 req.periodStart,
@@ -94,8 +94,8 @@ public with sharing class ProRataFeeCalculator {
             Decimal.valueOf(overlapDays) * Decimal.valueOf((12 / scheduleCount)) / 365 :
             Decimal.valueOf(overlapDays) / Decimal.valueOf(cycleLength);
         modifier = modifier.setScale(6, RoundingMode.HALF_UP);
-        Decimal prorataRate = (agreementRate * modifier).setScale(2, RoundingMode.HALF_UP);
+        Decimal proRataRate = (agreementRate * modifier).setScale(2, RoundingMode.HALF_UP);
 
-        return prorataRate;
+        return proRataRate;
     }
 }

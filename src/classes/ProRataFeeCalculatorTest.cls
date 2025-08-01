@@ -10,10 +10,10 @@ private class ProRataFeeCalculatorTest {
         Date periodEnd = Date.newInstance(2025, 5, 27); 
 
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2
+            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2, 100.00
         );
 
-        System.assertEquals(1, result);
+        System.assertEquals(100.00, result);
     }
     
     @isTest
@@ -25,10 +25,10 @@ private class ProRataFeeCalculatorTest {
         Date periodEnd = Date.newInstance(2025, 6, 14); 
 
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2
+            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2, 100.00
         );
 
-        Decimal expected = Decimal.valueOf(10).divide(14, 2, RoundingMode.HALF_UP); // 0.71
+        Decimal expected = (100.00 * Decimal.valueOf(10).divide(14, 6, RoundingMode.HALF_UP)).setScale(2, RoundingMode.HALF_UP); // 71.43
         System.assertEquals(expected, result, 'Biweekly service prorate modifier mismatch');
     }
 
@@ -41,10 +41,10 @@ private class ProRataFeeCalculatorTest {
         Date periodEnd = Date.newInstance(2025, 4, 1); 
 
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Month', 3
+            actualStart, actualEnd, periodStart, periodEnd, 'Month', 3, 100.00
         );
 
-        System.assertEquals(0.66, result, 'Quarterly service prorate modifier mismatch');
+        System.assertEquals(65.75, result, 'Quarterly service prorate modifier mismatch');
     }
     
     @isTest
@@ -52,9 +52,9 @@ private class ProRataFeeCalculatorTest {
         Date startDate = Date.newInstance(2025, 6, 1);
         Date endDate = Date.newInstance(2025, 6, 10);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            startDate, endDate, startDate, endDate, 'Day', 10
+            startDate, endDate, startDate, endDate, 'Day', 10, 100.00
         );
-        System.assertEquals(1.00, result);
+        System.assertEquals(100.00, result);
     }
 
     @isTest
@@ -65,11 +65,11 @@ private class ProRataFeeCalculatorTest {
         Date periodEnd = Date.newInstance(2025, 6, 10);
 
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2
+            actualStart, actualEnd, periodStart, periodEnd, 'Week', 2, 100.00
         );
 
         // 6 overlapping days (June 5 to 10), cycle length = 10 days
-        Decimal expected = Decimal.valueOf(6).divide(10, 2, RoundingMode.HALF_UP); // = 0.60
+        Decimal expected = (100.00 * Decimal.valueOf(6).divide(10, 6, RoundingMode.HALF_UP)).setScale(2, RoundingMode.HALF_UP); // = 60.00
 
         System.assertEquals(expected, result);
     }
@@ -79,9 +79,9 @@ private class ProRataFeeCalculatorTest {
         Date startDate = Date.newInstance(2025, 6, 1);
         Date endDate = Date.newInstance(2025, 6, 30);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            startDate, endDate, startDate, endDate, 'Month', 1
+            startDate, endDate, startDate, endDate, 'Month', 1, 100.00
         );
-        System.assertEquals(1.00, result);
+        System.assertEquals(100.00, result);
     }
 
     @isTest
@@ -91,16 +91,16 @@ private class ProRataFeeCalculatorTest {
         Date periodStart = Date.newInstance(2025, 6, 1);
         Date periodEnd = Date.newInstance(2025, 6, 30);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Month', 1
+            actualStart, actualEnd, periodStart, periodEnd, 'Month', 1, 100.00
         );
-        Decimal expected = Decimal.valueOf(16).divide(30, 2, RoundingMode.HALF_UP);
+        Decimal expected = (100.00 * 16 * Decimal.valueOf(12).divide(365, 6, RoundingMode.HALF_UP)).setScale(2, RoundingMode.HALF_UP);
         System.assertEquals(expected, result);
     }
 
     @isTest
     static void testInvalidFrequency() {
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            Date.today(), Date.today().addDays(10), Date.today(), Date.today().addDays(10), 'Year', 1
+            Date.today(), Date.today().addDays(10), Date.today(), Date.today().addDays(10), 'Year', 1, 100.00
         );
         System.assertEquals(0.00, result);
     }
@@ -108,7 +108,7 @@ private class ProRataFeeCalculatorTest {
     @isTest
     static void testZeroScheduleCount() {
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            Date.today(), Date.today().addDays(5), Date.today(), Date.today().addDays(5), 'Day', 0
+            Date.today(), Date.today().addDays(5), Date.today(), Date.today().addDays(5), 'Day', 0, 100.00
         );
         System.assertEquals(0.00, result);
     }
@@ -120,7 +120,7 @@ private class ProRataFeeCalculatorTest {
         Date periodStart = Date.newInstance(2025, 6, 1);
         Date periodEnd = Date.newInstance(2025, 6, 10);
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            actualStart, actualEnd, periodStart, periodEnd, 'Day', 10
+            actualStart, actualEnd, periodStart, periodEnd, 'Day', 10, 100.00
         );
         System.assertEquals(0.00, result);
     }
@@ -128,7 +128,7 @@ private class ProRataFeeCalculatorTest {
     @isTest
     static void testNullInputs() {
         Decimal result = ProRataFeeCalculator.calculateProRataModifier(
-            null, null, null, null, null, null
+            null, null, null, null, null, null, null
         );
         System.assertEquals(0.00, result);
     }
